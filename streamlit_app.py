@@ -4,6 +4,17 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import re
+# import category
+
+# file_path = input('Enter the File path')
+
+with open('category1.txt', 'r') as f:
+    content = f.read() 
+    soup2 = BeautifulSoup(content, 'html.parser')
+    CategoryOptions =[]
+    for tag in soup2.find_all('option', attrs = {}):
+        CategoryOptions.append(tag.text)
+    f.close()    
 
 def get_details(data):
     title = ''
@@ -47,12 +58,19 @@ def get_details(data):
     return data
         
 st.write(""" # Internshala Scraper""")
+selections = st.sidebar.multiselect(
+        'Pick The Domains',
+        CategoryOptions
+    )
+link = 'https://internshala.com/internships/'
 
+for i in range(len(selections)):    
+    selections[i] = ','+ selections[i].replace(" ", '-').lower()
+    link+=selections[i]
 
+print(link + '-internship/')    
 
-link = 'https://internshala.com/internships/big-data,data-analysis,data-analytics,data-science,machine-learning,python-internship/'
-
-response = requests.get(link)
+response = requests.get(link + '-internship/')
 print('Response = ' + str(response.status_code))
     
 if response.status_code == 200:
@@ -61,10 +79,11 @@ if response.status_code == 200:
     
     link_soup = soup.find('span', attrs = {'id':"total_pages"}).text
     total_pages = int(link_soup)
-    num_of_pages = st.sidebar.slider('Number of Internships to Scrape',min_value=1 ,max_value=total_pages )
+    num_of_pages = st.sidebar.slider('Number of Internshala pages to Scrape',max_value=total_pages )
+    
 
 dict_of_data = []
-for j in range(1,num_of_pages):
+for j in range(1,num_of_pages+1):
     
     res_link = link + 'page-' + str(j)
     res = requests.get(res_link)
@@ -81,3 +100,14 @@ for i in range(len(dict_of_data)):
 df = pd.DataFrame.from_dict(dict_of_data2, orient='index')
 
 st.dataframe(df)
+lat = []
+lon = []
+for i in df['locations']:
+    
+df2 = pd.DataFrame({
+    'lat' :  [18.521428, 28.5706333],
+    'lon' : [73.8544541,77.3272147]
+})
+value = st.sidebar.toggle('Do You want location on Maps ?')
+if(value):
+    st.map(df2, size = 50)
