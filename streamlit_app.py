@@ -100,14 +100,14 @@ for i in range(len(dict_of_data)):
 df = pd.DataFrame.from_dict(dict_of_data2, orient='index')
 
 st.dataframe(df)
-lat = []
-lon = []
-for i in df['locations']:
+# lat = []
+# lon = []
+# for i in df['locations']:
     
-df2 = pd.DataFrame({
-    'lat' :  [18.521428, 28.5706333],
-    'lon' : [73.8544541,77.3272147]
-})
-value = st.sidebar.toggle('Do You want location on Maps ?')
-if(value):
-    st.map(df2, size = 50)
+#     df2 = pd.DataFrame({
+#         'lat' :  [18.521428, 28.5706333],
+#         'lon' : [73.8544541,77.3272147]
+#     })
+# value = st.sidebar.toggle('Do You want location on Maps ?')
+# if(value):
+#     st.map(df2, size = 50)
