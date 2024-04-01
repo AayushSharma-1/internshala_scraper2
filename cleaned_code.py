@@ -1,0 +1,55 @@
+import pandas as pd
+import streamlit as st
+import requests
+from bs4 import BeautifulSoup
+
+with open('category1.txt', 'r') as f:
+    content = f.read() 
+    soup2 = BeautifulSoup(content, 'html.parser')
+    CategoryOptions = [tag.text for tag in soup2.find_all('option')]
+
+def get_details(data):
+    title = data.find('h3', class_='heading_4_5 profile').text.strip()
+    company_name = data.find('div', class_='company_and_premium').find('p').text.strip()
+    location = [loc.text for loc in data.find('div', id='location_names').find_all('a')]
+    start_date = data.find('span', class_='start_immediately_desktop').text if data.find('span', class_='start_immediately_desktop') else "Not Available"
+    duration = data.find('div', class_='item_body').text.strip()
+    stipend = data.find('span', class_='stipend').text.strip()
+    status = data.find_all('i', class_='ic-16-reschedule')[0].next_sibling.strip()
+    links = 'https://internshala.com' + data.find('a', class_='btn btn-secondary view_detail_button_outline')['href']
+    
+    return {
+        "Title": title,
+        "Company Name": company_name,
+        "Location": location,
+        "Start Date": start_date,
+        "Duration": duration,
+        "Stipend": stipend,
+        "Status": status,
+        "Links": links
+    }
+
+st.write(""" # Internshala Scraper""")
+selections = st.sidebar.multiselect('Pick The Domains', CategoryOptions)
+link = 'https://internshala.com/internships/' + '-'.join(sel.replace(" ", '-').lower() for sel in selections)
+
+print(link)
+
+response = requests.get(link + '-internship/')
+if response.status_code == 200:
+    soup = BeautifulSoup(response.content, 'html.parser')
+    total_pages = int(soup.find('span', id="total_pages").text)
+    num_of_pages = st.sidebar.slider('Number of Internshala pages to Scrape', max_value=total_pages)
+    
+    dict_of_data = []
+    for j in range(1, num_of_pages+1):
+        res_link = f"{link}/page-{j}"
+        res = requests.get(res_link)
+        res_soup = BeautifulSoup(res.content, 'html.parser')
+        dee = res_soup.find_all('div', class_='container-fluid individual_internship visibilityTrackerItem')
+        
+        for item in dee:
+            dict_of_data.append(get_details(item))
+
+    df = pd.DataFrame(dict_of_data)
+    st.dataframe(df)
