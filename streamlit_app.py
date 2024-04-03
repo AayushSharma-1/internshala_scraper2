@@ -40,7 +40,7 @@ def get_details(data):
 
         
     duration = data.find('div', attrs = {'class' : 'item_body'}).text.strip()
-    stipend = data.find('span', attrs = {'class' : 'stipend'}).text.strip()
+    stipend = re.findall('₹ \d+.\d+',str(data.find('div', attrs = {'class' : 'other_detail_item stipend_container'})))
     status = re.findall(pattern_for_status , str(dee[0]))[0]
     links = data.find('a', attrs = {'class' : 'btn btn-secondary view_detail_button_outline', 'href' : True}).get('href')
     
