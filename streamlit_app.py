@@ -32,7 +32,10 @@ def get_details(data):
 
 st.write(""" # Internshala Scraper""")
 selections = st.sidebar.multiselect('Pick The Domains', CategoryOptions)
-link = 'https://internshala.com/internships/' + '-'.join(sel.replace(" ", '-').lower() for sel in selections)
+link = 'https://internshala.com/internships/'
+for i in range(len(selections)):    
+    selections[i] = ','+ selections[i].replace(" ", '-').lower()
+    link+=selections[i]
 
 print(link)
 
