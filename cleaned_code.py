@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
+import re
 
 with open('category1.txt', 'r') as f:
     content = f.read() 
@@ -14,7 +15,7 @@ def get_details(data):
     location = [loc.text for loc in data.find('div', id='location_names').find_all('a')]
     start_date = data.find('span', class_='start_immediately_desktop').text if data.find('span', class_='start_immediately_desktop') else "Not Available"
     duration = data.find('div', class_='item_body').text.strip()
-    stipend = data.find('span', class_='stipend').text.strip()
+    stipend = re.findall('₹ \d+.\d+',str(data.find('div', attrs = {'class' : 'other_detail_item stipend_container'})))
     status = data.find_all('i', class_='ic-16-reschedule')[0].next_sibling.strip()
     links = 'https://internshala.com' + data.find('a', class_='btn btn-secondary view_detail_button_outline')['href']
     
@@ -52,4 +53,5 @@ if response.status_code == 200:
             dict_of_data.append(get_details(item))
 
     df = pd.DataFrame(dict_of_data)
-    st.dataframe(df)
+    df.index = pd.RangeIndex(start = 1, stop = len(df) + 1, name = 'Index')
+    st.dataframe(df, use_container_width=True)
