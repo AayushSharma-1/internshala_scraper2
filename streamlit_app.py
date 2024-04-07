@@ -47,7 +47,8 @@ if response.status_code == 200:
     
     dict_of_data = []
     for j in range(1, num_of_pages+1):
-        res_link = f"{link}/page-{j}"
+        res_link = f"{link + '-internship'}/page-{j}"
+        print(res_link)
         res = requests.get(res_link)
         res_soup = BeautifulSoup(res.content, 'html.parser')
         dee = res_soup.find_all('div', class_='container-fluid individual_internship visibilityTrackerItem')
