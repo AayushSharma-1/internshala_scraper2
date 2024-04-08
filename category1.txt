@@ -1,4 +1,4 @@
-<div id="categoryOptions"><select data-placeholder="e.g. Marketing" id="select_category" name="select_category" class="form-control chosen-select default-chosen" multiple="" tabindex="-1" style="display: none;">
+<div id="categoryOptions"><select data-placeholder="" id="select_category" name="select_category" class="form-control chosen-select default-chosen" multiple="" tabindex="-1" style="display: none;">
             <option value=".net">.NET</option>
                 <option value=".net%20development">.NET Development</option>
                 <option value="3d%20printing">3D Printing</option>
