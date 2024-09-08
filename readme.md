@@ -1,4 +1,3 @@
-```markdown
 # Internshala Internship Scraper
 
 This application scrapes internship listings from Internshala based on user-selected categories. It extracts key information such as the title, company name, location, duration, and stipend for each internship and displays the data in an interactive table.
